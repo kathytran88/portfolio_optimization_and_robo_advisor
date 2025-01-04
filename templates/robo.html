@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kathy Tran's project</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            margin-top: 50px;
+            margin-bottom: 80px;
+        }
+        h1, h3 {
+            color: #7e212a;
+            font-weight: bold;
+        }
+        .form-control {
+            margin-bottom: 15px;
+        }
+        .navbar {
+            background-color: #8b6468;
+        }
+        .navbar .btn {
+            color: white;
+            margin-left: 15px;
+        }
+
+        .btn {
+            margin-top: 30px;
+        }
+        .result-card {
+            margin-top: 20px;
+            border: 1px solid #8b6468;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #8b6468;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        #errorMessage {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+        }
+
+        li {
+            color: #6d08e8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <span class="navbar-text text-light" style="visibility: hidden;">Invisible Text</span>
+            <div class="d-flex">
+                <a href="#" class="btn btn-outline-light">View my code on Github</a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light">News to Stocks Analyzer</a>
+                <a href="{{ url_for('robo_advisor') }}" class="btn btn-outline-light">Robo-advisor</a>
+                <a href="{{ url_for('analysis') }}" class="btn btn-outline-light">Statistical Analysis</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="text-center">Robo-Advisor</h1>
+        <h4 class="text-center">Recommend stock portfolios based on your financial goals and market data.</h4>
+        <h6>Tools & Methods I used:</h6>
+        <p class="text-center">
+            <li>yfinance API => fetch historical stock prices; calculate key metrics: annual returns, annual risks (standard deviations of returns)</li>
+
+            <li>Daily stock returns => covariance matrix to quantify correlations between S&P 500 stocks</li>
+
+            <li>Modern Portfolio Theory => simulate 10,000 random portfolios with varying weights; compare expected returns, risks, and Sharpe Ratios - statistical measures of risk-adjusted performance; pick the top 5 that align with the initial investment amount with lowest risk and highest return.</li>
+
+            <li>Optimization => matrix operations (NumPy) & covariance analysis to identify portfolios that satisfy user-defined constraints, such as achieving a target annualized return within the given investment budget.</li>
+        </p>
+<br>
+            <h2 class="text-center">Try it Out</h2>
+        <!-- Form for user input -->
+        <form method="POST">
+            <div class="form-group">
+                <label for="initial_investment">Initial Investment in USD (at least 50$):</label>
+                <input type="number" id="initial_investment" name="initial_investment" class="form-control" placeholder="Enter initial investment amount" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Investment Duration in years (at least 1 year):</label>
+                <input type="number" id="duration" name="duration" class="form-control" placeholder="Enter duration in years" required>
+            </div>
+            <div class="form-group">
+                <label for="target_return">Target Return in USD (larger than initial investment and cannot be unreasonably large):</label>
+                <input type="number" id="target_return" name="target_return" class="form-control" placeholder="Enter target return amount" required>
+            </div>
+
+            <div id="errorMessage"></div>
+            <button type="submit" id='input_form_btn' class="btn btn-primary w-100" style="background-color: #8b6468;">Get Recommendations</button>
+        </form>
+
+        {% if portfolios %}
+    <div class="result-card">
+        <h3>Top Portfolios</h3>
+        {% for portfolio in portfolios %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Portfolio {{ portfolio['Portfolio'] }}</h5>
+                <ul>
+                    {% for stock, quantity in portfolio['Stocks'].items() %}
+                        <li>{{ stock }}: {{ quantity }} shares</li>
+                    {% endfor %}
+                </ul>
+                <p>Total Cost: ${{ portfolio['Total Cost']|round(2) }}</p>
+                <p>Remaining Budget: ${{ portfolio['Remaining Budget']|round(2) }}</p>
+                <p>Annual Return: {{ portfolio['Return'] * 100|round(2) }}%</p>
+                <p>Annual Risk: {{ portfolio['Risk'] * 100|round(2) }}%</p>
+                <!--<p>Sharpe Ratio: {{ portfolio['Sharpe Ratio']|round(2) }}</p> -->
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <div class="footer">
+        Kathy Tran's project
+    </div>
+
+    <script src="{{ url_for('static', filename='robo.js') }}"></script>
+
+</body>
+</html>
+

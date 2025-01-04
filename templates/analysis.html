@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kathy Tran's project</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            margin-top: 50px;
+            margin-bottom: 80px;
+        }
+        h1, h3 {
+            color: #7e212a;
+            font-weight: bold;
+        }
+        .navbar {
+            background-color: #8b6468;
+        }
+        .navbar .btn {
+            color: white;
+            margin-left: 15px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #8b6468;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .image-container img {
+            display: block;
+            margin: 20px auto;
+            max-width: 60%; 
+            height: auto; 
+            border: 1px solid #8b6468;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <span class="navbar-text text-light" style="visibility: hidden;">Invisible Text</span>
+            <div class="d-flex">
+                <a href="#" class="btn btn-outline-light">View my code on Github</a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light">News to Stocks Analyzer</a>
+                <a href="{{ url_for('robo_advisor') }}" class="btn btn-outline-light">Robo-advisor</a>
+                <a href="{{ url_for('analysis') }}" class="btn btn-outline-light">Statistical Analysis</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="text-center">Statistical Analysis</h1>
+        <h4 class="text-center">Analyzing stock data in the S&P 500 using the Modern Portfolio Theory</h4>
+        <br>
+
+        <div class="image-container">
+            <h3>1/ Correlation Matrix</h3>
+            <p>
+                <ul>Calculated daily returns of 502 stocks in the S&P 500 from the last trading day of 2020 to the last trading day of 2024.</ul>
+
+                <ul>Used stock daily returns to calculate the covariance matrix to derive the correlation matrix for S&P 500 stocks to quantify interdependencies between assets; visualize with Seaborn</ul>
+
+                <ul>Demonstrated how asset correlations impact portfolio diversification and risk assessment.</ul>
+
+                <ul>The original matrix is 502 x 502, which is hard to visualize, so I limit the size to only include the top 20 stocks in the S&P 500</ul>
+            </p>
+            <img src="{{ url_for('static', filename='analysis/covariance_matrix_visualization.png') }}" alt="Covariance Matrix Visualization">
+        </div>
+        <br>
+        <p>
+            <li>As seen from the matrix, stocks like JPM & BRK-B are highly positively correlated with each other (0.98) => their prices move together, can increase portfolio risk if held in one portfolio.</li>
+            <li>On the other hand, JPM & PG have the lowest and negative correlation (-0.68) => they prices move oppositely, helping to diversify and reduce overall volatility in portfolio.</li>
+
+            </p>
+        <br>
+
+        <div class="image-container">
+            <h3>2/ Efficient Frontier</h3>
+            <p>
+                <ul>Derived the Efficient Frontier using quadratic optimization to balance portfolio risk and return; visualize with Matplotlib</ul>
+                
+                <ul>Highlighted optimal portfolios based on minimum variance and maximum Sharpe Ratio to guide investment decisions.</ul>
+            </p>
+            <img src="{{ url_for('static', filename='analysis/efficient_frontier_visualization.png') }}" alt="Efficient Frontier Visualization">
+        </div>
+        <br>
+        <p>
+            <li>X-axis (Risk): Measured by standard deviation of returns; higher standard deviation = higher variability</li>
+            <li>Y-axis (Return): The expected (or average) annual return of the portfolio.</li>
+            <li>Each dot in the scatter plot is a unique portfolio. Each portfolio is a combination of some of the 502 stocks in the S&P500.</li>
+            <li>The efficient frontier is the outer boundary of this plot, featuring portfolios that maximize return for a given level of risk, or minimize risk for a given level of return.</li>
+        </p>
+    </div>
+
+    <div class="footer">
+        Kathy Tran's project
+    </div>
+</body>
+</html>
+
+

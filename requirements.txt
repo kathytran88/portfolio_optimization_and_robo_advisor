@@ -1,0 +1,8 @@
+Flask>=2.0,<3.0
+pandas
+yfinance
+transformers
+spacy
+numpy
+scipy
+

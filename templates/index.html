@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kathy Tran's project</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            margin-top: 50px;
+            margin-bottom: 80px;
+        }
+        .result-card {
+            margin-top: 20px;
+            border: 1px solid #8b6468;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        textarea {
+            resize: none;
+        }
+        h1, h3, h5 {
+            color: #7e212a;
+            font-weight: bold;
+        }
+        p.card-text {
+            margin-bottom: 10px;
+        }
+        .navbar {
+            background-color: #8b6468;
+        }
+        .navbar .btn {
+            color: white;
+            margin-left: 15px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #8b6468;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 5px;
+            display: none; 
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <span class="navbar-text text-light" style="visibility: hidden;">Invisible Text</span>
+            <div class="d-flex">
+                <a href="#" class="btn btn-outline-light">View my code on Github</a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light">News to Stocks Analyzer</a>
+                <a href="{{ url_for('robo_advisor') }}" class="btn btn-outline-light">Robo-advisor</a>
+                <a href="{{ url_for('analysis') }}" class="btn btn-outline-light">Statistical Analysis</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="text-center">News to Stocks Analyzer</h1>
+        <h4 class="text-center">Paste a news article below to analyze its stock market impact.</h4>
+        <p class="text-center"><u>Project overview:</u> Using an NLP model to summarize main ideas, analyze sentiments in news articles & predict its impact on companies' stocks</p>
+        
+        <!-- Form for submitting article -->
+        <form method="POST" id="articleForm">
+            <div class="mb-3">
+                <textarea 
+                    class="form-control" 
+                    name="article_text" 
+                    rows="10" 
+                    placeholder="Paste your news article here..." 
+                    required 
+                    aria-label="News article text input"></textarea>
+            </div>
+
+            <div id="error-message" class="error-message"></div>
+            
+            <button type="submit" class="btn btn-primary w-100" style="background-color: #8b6468;">Analyze</button>
+        </form>
+
+        {% if submitted %}
+        <div class="result-card">
+            <h3>Results</h3>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Summary</h5>
+                    <p class="card-text">{{ results.get('summary', 'No summary available.') }}</p>
+                    
+                    <h5 class="card-title">Organizations Affected</h5>
+                    <p class="card-text">
+                        {% if results['org'] == 'No organizations affected' %}
+                            {{ results['org'] }}
+                        {% else %}
+                            {{ results['org']|join(', ') }}
+                        {% endif %}
+                    </p>
+                    
+                    <h5 class="card-title">Sentiment</h5>
+                    <p class="card-text">
+                        {% if results.get('sentiment') %}
+                            {{ results['sentiment']['label'] }} (Score: {{ results['sentiment']['score'] }})
+                        {% else %}
+                            Sentiment analysis unavailable.
+                        {% endif %}
+                    </p>
+                    
+                    <h5 class="card-title">Companies and Stock Prices</h5>
+                    {% if results['ticker'] == 'No stocks affected' %}
+                    <p class="card-text">No stocks affected.</p>
+                    {% else %}
+                    <ul>
+                        {% for i in range(results['ticker']|length) %}
+                        <li>
+                            {{ results['ticker'][i] }}: 
+                            Current Price: 
+                            {% if results['current price'][i] is not none and results['current price'][i] != 'N/A' %}
+                                ${{ results['current price'][i]|round(2) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                            |
+                            Predicted Price after the news: 
+                            {% if results['new price'][i] is not none and results['new price'][i] != 'N/A' %}
+                                ${{ results['new price'][i]|round(2) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        Kathy Tran's project
+    </div>
+
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+</body>
+</html>
+
+
+
