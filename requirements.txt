@@ -5,4 +5,5 @@ transformers
 spacy
 numpy
 scipy
-
+tensorflow
+torch
