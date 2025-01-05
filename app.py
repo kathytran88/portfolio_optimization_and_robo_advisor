@@ -14,10 +14,24 @@ sentiment_analyzer = pipeline("sentiment-analysis", device=0)
 
 nlp = spacy.load("en_core_web_sm")
 
+def ensure_complete_sentences(text):
+    doc = nlp(text)
+    final_sentences = []
+    for sent in doc.sents:
+        sent_text = sent.text.strip()
+        if sent_text.endswith(('.', '!', '?')):
+            final_sentences.append(sent_text)
+        else:
+            pass
+
+    return " ".join(final_sentences)
+
+
 def analyze_article(text):
     # Summarize the article
     try:
-        summary = summarizer(text, max_length=50, min_length=25, do_sample=False)[0]['summary_text']
+        raw_summary = summarizer(text, max_length=50, min_length=25, do_sample=False)[0]['summary_text']
+        summary = ensure_complete_sentences(raw_summary)
     except Exception as e:
         summary = "Error summarizing the article."
         print(f"Summarization error: {e}")

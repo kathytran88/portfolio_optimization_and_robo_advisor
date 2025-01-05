@@ -30,7 +30,7 @@ function formValidation(event) {
 
         // at least 50 for initial
         if (initial < 50) {
-            errors += 'Initial investment has to be at least 50$';
+            errors += 'Initial investment has to be at least 50$.<br>';
         }
         // Target too high 
         const maxTarget = initial * Math.pow(2.5, duration);
@@ -51,7 +51,7 @@ function formValidation(event) {
         
           if (duration < requiredDuration) {
             errors += "It is not feasible to achieve that high return in such a short time. " +
-              "Please lower your target or increase the duration.";
+              "Please lower your target or increase the duration.<br>";
           }
         
 
