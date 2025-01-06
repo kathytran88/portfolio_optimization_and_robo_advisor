@@ -9,7 +9,7 @@ from scipy.optimize import minimize
 app = Flask(__name__)
 
 # Load NPL model. My laptop has GPU so I specify to run with CUDA
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0)
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=0)
 sentiment_analyzer = pipeline("sentiment-analysis", device=0)
 
 nlp = spacy.load("en_core_web_sm")
